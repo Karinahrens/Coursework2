@@ -23,28 +23,13 @@ public class Server {
     // Port and Server Socket
     public static void main(String[] args) throws Exception {
         System.out.println(new Date(System.currentTimeMillis()) + " The chat server is running...");
-        ExecutorService pool = Executors.newFixedThreadPool(500);
+        ExecutorService pool = Executors.newFixedThreadPool(50);
         try (ServerSocket listener = new ServerSocket(39001)) {
             while (true) {
                 pool.execute(new Handler(listener.accept()));
             }
         }
     }
-    // We need to have a coordinator as the member is connected.
-    public static void findcoordinator() {
-        // Server needs to have at least one member to be qualified as a coordinator
-        if (!names.isEmpty() && coordinators.isEmpty()) {
-            for (String i : names) {
-                    coordinators.add(i);
-                    for (PrintWriter writer : writers) {
-                        // message to show member is coordinator
-                        writer.println("MESSAGE " + i + " is now the coordinator");
-                    }
-                    System.out.println(i + " is now the coordinator");
-                    break;
-                }
-            }
-        }
 
     // Client's handler
     private static class Handler implements Runnable {
@@ -115,11 +100,11 @@ public class Server {
                     }
 
                 }
-                findcoordinator();
+
+
                 // Accept messages from this client and broadcast them.
                 while (true) {
-                    // The server will attempt to nominate a coordinator at all times
-                    findcoordinator();
+
                     // Accept messages from this client and broadcast them.
                     while (true) {
                         String input = in.nextLine();
